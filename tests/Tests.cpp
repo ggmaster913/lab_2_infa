@@ -6,7 +6,6 @@
 #include "MutableArraySequence.h"
 #include "ImmutableArraySequence.h"
 #include "MutableListSequence.h"
-#include "ImmutableListSequence.h"
 #include "BitSequence.h"
 #include "SequenceStats.h"
 #include "ICollection.h"
