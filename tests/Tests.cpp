@@ -17,7 +17,7 @@ int sumHelper(const int& acc, const int& x) { return acc + x; }
 
 // --- dynamic array ---
 
-// 1. конструкторы — валидные варианты + отрицательный размер бросает
+// создание массива и проверка на кривой размер
 TEST(DynamicArrayTest, ConstructorsAndNegativeSize) {
     DynamicArray<int> arr1(3);
     EXPECT_EQ(arr1.GetSize(), 3);
@@ -32,7 +32,7 @@ TEST(DynamicArrayTest, ConstructorsAndNegativeSize) {
     EXPECT_THROW(DynamicArray<int>(nullptr, 3), std::invalid_argument);
 }
 
-// 2. get/set — норма + выход за границу
+// чтение, запись и вылет за пределы массива
 TEST(DynamicArrayTest, GetSetAndOutOfRange) {
     DynamicArray<int> arr(2);
     arr.Set(0, 100);
@@ -46,7 +46,7 @@ TEST(DynamicArrayTest, GetSetAndOutOfRange) {
     EXPECT_THROW(arr.Set(2, 300), std::out_of_range);
 }
 
-// 3. resize — рост и уменьшение
+// изменение размера в плюс и в минус
 TEST(DynamicArrayTest, ResizeGrowthAndShrink) {
     int raw[] = {1, 2, 3};
     DynamicArray<int> arr(raw, 3);
@@ -64,7 +64,7 @@ TEST(DynamicArrayTest, ResizeGrowthAndShrink) {
     EXPECT_THROW(arr.Resize(-1), std::invalid_argument);
 }
 
-// 4. operator[] — чтение и запись + выход за границу
+// доступ через квадратные скобки и неверные индексы
 TEST(DynamicArrayTest, IndexOperatorReadWrite) {
     DynamicArray<int> arr(3);
     arr[0] = 5;
@@ -79,7 +79,7 @@ TEST(DynamicArrayTest, IndexOperatorReadWrite) {
     EXPECT_THROW(arr[3], std::out_of_range);
 }
 
-// 5. icollection — полиморфный вызов
+// работа через интерфейс icollection
 TEST(DynamicArrayTest, ICollectionPolymorphism) {
     int raw[] = {7, 8, 9};
     DynamicArray<int> arr(raw, 3);
@@ -91,7 +91,7 @@ TEST(DynamicArrayTest, ICollectionPolymorphism) {
 
 // --- linked list ---
 
-// 6. append/prepend — длина и порядок
+// вставка в начало и в конец
 TEST(LinkedListTest, AppendAndPrependOrder) {
     LinkedList<int> list;
     list.Append(20);
@@ -104,7 +104,7 @@ TEST(LinkedListTest, AppendAndPrependOrder) {
     EXPECT_EQ(list.Get(2), 30);
 }
 
-// 7. insertat — в середину + выход за границу бросает
+// вставка по индексу и проверка границ
 TEST(LinkedListTest, InsertAtMiddleAndBounds) {
     int raw[] = {1, 3};
     LinkedList<int> list(raw, 2);
@@ -117,7 +117,7 @@ TEST(LinkedListTest, InsertAtMiddleAndBounds) {
     EXPECT_THROW(list.InsertAt(99, -1), std::out_of_range);
 }
 
-// 8. getfirst/getlast/get на пустом списке — бросают
+// попытка взять элементы из пустого списка
 TEST(LinkedListTest, EmptyListThrows) {
     LinkedList<int> list;
     EXPECT_THROW(list.GetFirst(), std::out_of_range);
@@ -125,7 +125,7 @@ TEST(LinkedListTest, EmptyListThrows) {
     EXPECT_THROW(list.Get(0), std::out_of_range);
 }
 
-// 9. getsublist — корректный диапазон + некорректные индексы бросают
+// получение подсписка и невалидные диапазоны
 TEST(LinkedListTest, GetSubListRangeAndErrors) {
     int raw[] = {10, 20, 30, 40};
     LinkedList<int> list(raw, 4);
@@ -141,7 +141,7 @@ TEST(LinkedListTest, GetSubListRangeAndErrors) {
     EXPECT_THROW(list.GetSubList(0, 5), std::out_of_range);
 }
 
-// 10. concat — корректный результат + nullptr бросает
+// склейка списков и проверка на nullptr
 TEST(LinkedListTest, ConcatAndNullptr) {
     int raw1[] = {1, 2};
     int raw2[] = {3, 4};
@@ -157,7 +157,7 @@ TEST(LinkedListTest, ConcatAndNullptr) {
     EXPECT_THROW(list1.Concat(nullptr), std::invalid_argument);
 }
 
-// 11. operator[] — чтение/запись + выход за границу
+// обращение по индексу через скобки в списке
 TEST(LinkedListTest, IndexOperatorReadWrite) {
     int raw[] = {10, 20};
     LinkedList<int> list(raw, 2);
@@ -170,7 +170,7 @@ TEST(LinkedListTest, IndexOperatorReadWrite) {
     EXPECT_THROW(list[2], std::out_of_range);
 }
 
-// 12. копия/operator= — независимость от оригинала
+// копирование списка и независимость данных
 TEST(LinkedListTest, CopyAndAssignmentIndependence) {
     int raw[] = {1, 2};
     LinkedList<int> original(raw, 2);
@@ -187,7 +187,7 @@ TEST(LinkedListTest, CopyAndAssignmentIndependence) {
 
 // --- sequence ---
 
-// 13. append/prepend/insertat на mutable — мутирует тот же объект
+// методы на мутабельной последовательности меняют сам объект
 TEST(SequenceTest, MutableOperationsModifyInPlace) {
     int raw[] = {2};
     MutableArraySequence<int> seq(raw, 1);
@@ -208,7 +208,7 @@ TEST(SequenceTest, MutableOperationsModifyInPlace) {
     EXPECT_EQ(seq.Get(2), 3);
 }
 
-// 14. append/prepend/insertat на immutable — оригинал не меняется
+// методы на иммутабельной последовательности возвращают новый объект
 TEST(SequenceTest, ImmutableOperationsDoNotModifyOriginal) {
     int raw[] = {2};
     ImmutableArraySequence<int> original(raw, 1);
@@ -233,7 +233,7 @@ TEST(SequenceTest, ImmutableOperationsDoNotModifyOriginal) {
     delete resInsert;
 }
 
-// 15. concat — смешанный array + list
+// объединение массива со списком
 TEST(SequenceTest, ConcatArrayWithList) {
     int rawArr[] = {1, 2};
     int rawList[] = {3, 4};
@@ -246,7 +246,7 @@ TEST(SequenceTest, ConcatArrayWithList) {
     EXPECT_EQ(res->Get(3), 4);
 }
 
-// 16. getsubsequence — корректный диапазон + некорректные индексы бросают
+// выделение подпоследовательности и неверные границы
 TEST(SequenceTest, GetSubSequenceRangeAndErrors) {
     int raw[] = {10, 20, 30, 40};
     MutableListSequence<int> seq(raw, 4);
@@ -262,7 +262,7 @@ TEST(SequenceTest, GetSubSequenceRangeAndErrors) {
     EXPECT_THROW(seq.GetSubSequence(0, 4), std::out_of_range);
 }
 
-// 17. where — фильтрация на непустой + на пустой последовательности
+// фильтрация через where для заполненной и пустой последовательности
 TEST(SequenceTest, WhereNonEmptyAndEmpty) {
     int raw[] = {1, 2, 3, 4, 5, 6};
     MutableArraySequence<int> seq(raw, 6);
@@ -279,7 +279,7 @@ TEST(SequenceTest, WhereNonEmptyAndEmpty) {
     delete emptyFiltered;
 }
 
-// 18. map — смена значений
+// поэлементное преобразование через map
 TEST(SequenceTest, MapValuesTransformation) {
     int raw[] = {1, 2, 3};
     MutableListSequence<int> seq(raw, 3);
@@ -292,7 +292,7 @@ TEST(SequenceTest, MapValuesTransformation) {
     delete mapped;
 }
 
-// 19. reduce — обычный случай + пустая последовательность возвращает initial
+// сворачивание последовательности через reduce
 TEST(SequenceTest, ReduceNormalAndEmpty) {
     int raw[] = {1, 2, 3, 4};
     MutableArraySequence<int> seq(raw, 4);
@@ -307,7 +307,7 @@ TEST(SequenceTest, ReduceNormalAndEmpty) {
 
 // --- bitsequence ---
 
-// 20. конструктор из bool[] + getbit
+// сборка битовой последовательности и чтение битов
 TEST(BitSequenceTest, ConstructorAndGetBit) {
     bool raw[] = {true, false, true};
     BitSequence bits(raw, 3);
@@ -318,7 +318,7 @@ TEST(BitSequenceTest, ConstructorAndGetBit) {
     EXPECT_TRUE(bits.GetBit(2));
 }
 
-// 21. and/or/xor — корректный результат + исключение при разной длине
+// побитовые операции and, or, xor и несовпадение длин
 TEST(BitSequenceTest, LogicOperationsAndLengthMismatch) {
     bool raw1[] = {true, false, true};
     bool raw2[] = {false, false, true};
@@ -347,7 +347,7 @@ TEST(BitSequenceTest, LogicOperationsAndLengthMismatch) {
     EXPECT_THROW(b1.Xor(bDiff), std::invalid_argument);
 }
 
-// 22. not
+// побитовое отрицание not
 TEST(BitSequenceTest, NotOperation) {
     bool raw[] = {true, false};
     BitSequence bits(raw, 2);
@@ -358,7 +358,7 @@ TEST(BitSequenceTest, NotOperation) {
     delete notRes;
 }
 
-// 23. setbit — меняет нужный бит + выход за границу бросает
+// установка бита и проверка диапазона
 TEST(BitSequenceTest, SetBitAndBounds) {
     bool raw[] = {false, false};
     BitSequence bits(raw, 2);
@@ -373,7 +373,7 @@ TEST(BitSequenceTest, SetBitAndBounds) {
 
 // --- sequence stats ---
 
-// 24. computeminmaxavg — отрицательные числа, пустая бросает, один элемент
+// подсчет min, max, avg и обработка пустой последовательности
 TEST(SequenceStatsTest, ComputeMinMaxAvgCalculations) {
     int raw1[] = {-10, -5, -20};
     MutableArraySequence<int> seq1(raw1, 3);
