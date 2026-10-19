@@ -1,5 +1,7 @@
 #include <iostream>
 #include <chrono>
+#include <limits>
+#include <cstdlib>
 
 #include "MutableArraySequence.h"
 #include "ImmutableArraySequence.h"
@@ -7,6 +9,21 @@
 #include "ImmutableListSequence.h"
 #include "BitSequence.h"
 #include "SequenceStats.h"
+
+// читает целое число, при ошибке просит ввести снова
+int ReadInt() {
+    int value;
+    while (!(std::cin >> value)) {
+        if (std::cin.eof()) {
+            std::cout << "\nКонец ввода. Завершение работы.\n";
+            std::exit(0);
+        }
+        std::cin.clear(); // иначе cin так и останется в ошибке и дальше ничего не прочитает
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Ошибка: нужно целое число. Повторите ввод: ";
+    }
+    return value;
+}
 
 // Функции для функциональных операций
 bool PredicateEven(const int& x) { return x % 2 == 0; }
@@ -40,23 +57,23 @@ void OutputBitMask(const BitSequence* bits) {
 Sequence<int>* BuildSequenceInteractive(bool& isMutable) {
     std::cout << "\n--- Создание последовательности ---\n";
     std::cout << "1. Массив (DynamicArray)\n2. Связный список (LinkedList)\nВыбор: ";
-    int containerChoice;
-    std::cin >> containerChoice;
+    int containerChoice = ReadInt();
 
     std::cout << "1. Изменяемая (Mutable)\n2. Неизменяемая (Immutable)\nВыбор: ";
-    int mutChoice;
-    std::cin >> mutChoice;
+    int mutChoice = ReadInt();
     isMutable = (mutChoice == 1);
 
     std::cout << "Количество начальных элементов: ";
-    int count;
-    std::cin >> count;
+    int count = ReadInt();
+    while (count < 0) {
+        std::cout << "Количество не может быть отрицательным. Повторите ввод: ";
+        count = ReadInt();
+    }
 
     DynamicArray<int> buffer(count > 0 ? count : 0);
     for (int i = 0; i < count; ++i) {
         std::cout << "Элемент " << i << ": ";
-        int val;
-        std::cin >> val;
+        int val = ReadInt();
         buffer.Set(i, val);
     }
 
@@ -94,57 +111,56 @@ void ExecuteSequenceMenu() {
                   << "0. Вернуться в главное меню\n"
                   << "Пункт > ";
 
-        int option;
-        std::cin >> option;
+        int option = ReadInt();
         if (option == 0) break;
 
         try {
             if (option == 1) {
                 std::cout << "Значение: ";
-                int v; std::cin >> v;
+                int v = ReadInt();
                 Sequence<int>* next = currentSeq->Append(v);
                 if (!isMutable) delete currentSeq; // иммутабл вернул новый объект, старый удаляем, иначе утечка
                 currentSeq = next;
                 OutputSequence(currentSeq);
             } else if (option == 2) {
                 std::cout << "Значение: ";
-                int v; std::cin >> v;
+                int v = ReadInt();
                 Sequence<int>* next = currentSeq->Prepend(v);
                 if (!isMutable) delete currentSeq;
                 currentSeq = next;
                 OutputSequence(currentSeq);
             } else if (option == 3) {
                 std::cout << "Значение: ";
-                int v; std::cin >> v;
+                int v = ReadInt();
                 std::cout << "Индекс: ";
-                int idx; std::cin >> idx;
+                int idx = ReadInt();
                 Sequence<int>* next = currentSeq->InsertAt(v, idx);
                 if (!isMutable) delete currentSeq;
                 currentSeq = next;
                 OutputSequence(currentSeq);
             } else if (option == 4) {
                 std::cout << "Индекс: ";
-                int idx; std::cin >> idx;
+                int idx = ReadInt();
                 std::cout << "Элемент [" << idx << "] = " << currentSeq->Get(idx) << "\n";
             } else if (option == 5) {
                 std::cout << "Первый: " << currentSeq->GetFirst() 
                           << ", Последний: " << currentSeq->GetLast() << "\n";
             } else if (option == 6) {
                 std::cout << "Индекс начала: ";
-                int s; std::cin >> s;
+                int s = ReadInt();
                 std::cout << "Индекс конца: ";
-                int e; std::cin >> e;
+                int e = ReadInt();
                 Sequence<int>* sub = currentSeq->GetSubSequence(s, e);
                 std::cout << "Срез: ";
                 OutputSequence(sub);
                 delete sub;
             } else if (option == 7) {
                 std::cout << "Сколько элементов во второй последовательности: ";
-                int k; std::cin >> k;
+                int k = ReadInt();
                 DynamicArray<int> tempArr(k);
                 for (int i = 0; i < k; ++i) {
                     std::cout << "Элемент " << i << ": ";
-                    int v; std::cin >> v;
+                    int v = ReadInt();
                     tempArr.Set(i, v);
                 }
                 MutableArraySequence<int> second(tempArr);
@@ -187,12 +203,12 @@ void ExecuteBitMenu() {
     try {
         std::cout << "\n--- Работа с BitSequence ---\n";
         std::cout << "Длина первой маски: ";
-        int len; std::cin >> len;
+        int len = ReadInt();
 
         DynamicArray<Bit> raw(len);
         for (int i = 0; i < len; ++i) {
             std::cout << "Бит " << i << " (0/1): ";
-            int b; std::cin >> b;
+            int b = ReadInt();
             raw.Set(i, Bit(b != 0));
         }
 
@@ -227,8 +243,7 @@ void ExecuteBitMenu() {
 void ExecuteBenchmark() {
     std::cout << "\n--- Замер скорости Append ---\n";
     std::cout << "Количество вставок (например, 25000): ";
-    int iterations;
-    std::cin >> iterations;
+    int iterations = ReadInt();
 
     MutableArraySequence<int> arraySeq;
     MutableListSequence<int> listSeq;
@@ -257,8 +272,7 @@ int main() {
                   << "0. Завершить работу\n"
                   << "Выбор > ";
 
-        int mainChoice;
-        std::cin >> mainChoice;
+        int mainChoice = ReadInt();
 
         if (mainChoice == 0) break;
         if (mainChoice == 1) ExecuteSequenceMenu();
