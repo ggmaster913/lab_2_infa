@@ -58,9 +58,17 @@ Sequence<int>* BuildSequenceInteractive(bool& isMutable) {
     std::cout << "\n--- Создание последовательности ---\n";
     std::cout << "1. Массив (DynamicArray)\n2. Связный список (LinkedList)\nВыбор: ";
     int containerChoice = ReadInt();
+    while (containerChoice != 1 && containerChoice != 2) {
+        std::cout << "Нужно 1 или 2. Повторите ввод: ";
+        containerChoice = ReadInt();
+    }
 
     std::cout << "1. Изменяемая (Mutable)\n2. Неизменяемая (Immutable)\nВыбор: ";
     int mutChoice = ReadInt();
+    while (mutChoice != 1 && mutChoice != 2) {
+        std::cout << "Нужно 1 или 2. Повторите ввод: ";
+        mutChoice = ReadInt();
+    }
     isMutable = (mutChoice == 1);
 
     std::cout << "Количество начальных элементов: ";
