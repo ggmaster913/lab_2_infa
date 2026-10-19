@@ -103,7 +103,7 @@ void ExecuteSequenceMenu() {
                 std::cout << "Значение: ";
                 int v; std::cin >> v;
                 Sequence<int>* next = currentSeq->Append(v);
-                if (!isMutable) delete currentSeq;
+                if (!isMutable) delete currentSeq; // иммутабл вернул новый объект, старый удаляем, иначе утечка
                 currentSeq = next;
                 OutputSequence(currentSeq);
             } else if (option == 2) {
