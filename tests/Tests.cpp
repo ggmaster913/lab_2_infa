@@ -5,6 +5,7 @@
 #include "LinkedList.h"
 #include "MutableArraySequence.h"
 #include "ImmutableArraySequence.h"
+#include "ImmutableListSequence.h"
 #include "MutableListSequence.h"
 #include "BitSequence.h"
 #include "SequenceStats.h"
@@ -305,6 +306,25 @@ TEST(SequenceTest, ReduceNormalAndEmpty) {
     EXPECT_EQ(emptySum, 42);
 }
 
+// ошибки у иммутабл: исключение бросается, исходная не меняется (утечку смотрим через leaks)
+TEST(SequenceTest, ImmutableErrorsKeepOriginal) {
+    int raw[] = {1, 2, 3};
+    ImmutableArraySequence<int> arr(raw, 3);
+    ImmutableListSequence<int> list(raw, 3);
+
+    EXPECT_THROW(arr.InsertAt(9, 10), std::out_of_range);
+    EXPECT_THROW(arr.InsertAt(9, -1), std::out_of_range);
+    EXPECT_THROW(arr.Concat(nullptr), std::invalid_argument);
+    EXPECT_THROW(list.InsertAt(9, 10), std::out_of_range);
+    EXPECT_THROW(list.InsertAt(9, -1), std::out_of_range);
+    EXPECT_THROW(list.Concat(nullptr), std::invalid_argument);
+
+    EXPECT_EQ(arr.GetLength(), 3);
+    EXPECT_EQ(list.GetLength(), 3);
+    EXPECT_EQ(arr.Get(2), 3);
+    EXPECT_EQ(list.Get(2), 3);
+}
+
 // --- bitsequence ---
 
 // сборка битовой последовательности и чтение битов
@@ -316,6 +336,16 @@ TEST(BitSequenceTest, ConstructorAndGetBit) {
     EXPECT_TRUE(bits.GetBit(0));
     EXPECT_FALSE(bits.GetBit(1));
     EXPECT_TRUE(bits.GetBit(2));
+}
+
+// неправильные данные в конструкторе битовой последовательности
+TEST(BitSequenceTest, ConstructorInvalidArgs) {
+    bool raw[] = {true, false};
+    const bool* nullBits = nullptr; // просто nullptr неоднозначен: подходит и под Bit*, и под bool*
+    EXPECT_THROW(BitSequence(nullBits, 3), std::invalid_argument);
+    EXPECT_THROW(BitSequence(raw, -1), std::invalid_argument);
+    BitSequence empty(nullBits, 0);
+    EXPECT_EQ(empty.GetLength(), 0);
 }
 
 // побитовые операции and, or, xor и несовпадение длин
