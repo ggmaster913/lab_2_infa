@@ -65,6 +65,38 @@ TEST(DynamicArrayTest, ResizeGrowthAndShrink) {
     EXPECT_THROW(arr.Resize(-1), std::invalid_argument);
 }
 
+// ёмкость растёт с запасом, данные при перевыделении не теряются
+TEST(DynamicArrayTest, CapacityGrowsWithReserve) {
+    DynamicArray<int> arr(0);
+    EXPECT_EQ(arr.GetCapacity(), 0);
+
+    for (int i = 0; i < 100; i++) {
+        arr.Resize(i + 1);
+        arr.Set(i, i * 10);
+        EXPECT_GE(arr.GetCapacity(), arr.GetSize());
+    }
+    EXPECT_EQ(arr.GetSize(), 100);
+    EXPECT_GT(arr.GetCapacity(), 100); // выделено с запасом, а не ровно 100
+    EXPECT_EQ(arr.Get(0), 0);
+    EXPECT_EQ(arr.Get(99), 990);
+}
+
+// уменьшили и снова увеличили в пределах запаса: новые ячейки пустые, старые значения не всплывают
+TEST(DynamicArrayTest, ShrinkThenGrowGivesDefaults) {
+    int raw[] = {1, 2, 3, 4};
+    DynamicArray<int> arr(raw, 4);
+
+    arr.Resize(1);
+    EXPECT_EQ(arr.GetSize(), 1);
+    EXPECT_EQ(arr.GetCapacity(), 4); // память не освобождается
+    EXPECT_THROW(arr.Get(1), std::out_of_range);
+
+    arr.Resize(4);
+    EXPECT_EQ(arr.Get(0), 1);
+    EXPECT_EQ(arr.Get(1), 0);
+    EXPECT_EQ(arr.Get(3), 0);
+}
+
 // доступ через квадратные скобки и неверные индексы
 TEST(DynamicArrayTest, IndexOperatorReadWrite) {
     DynamicArray<int> arr(3);

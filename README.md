@@ -10,7 +10,7 @@
 
 | Что это | Файл |
 |---|---|
-| Динамический массив `DynamicArray<T>` | `include/DynamicArray.h` |
+| Динамический массив `DynamicArray<T>` (с запасом памяти: при нехватке ёмкость удваивается) | `include/DynamicArray.h` |
 | Связный список `LinkedList<T>` | `include/LinkedList.h` |
 | Последовательность `Sequence<T>` (абстрактный класс) | `include/Sequence.h` |
 | `ArraySequence<T>` и `ListSequence<T>` | `include/ArraySequence.h`, `include/ListSequence.h` |
@@ -67,7 +67,7 @@ cmake --build build
 ./build/tests
 ```
 
-26 тестов: 5 на `DynamicArray`, 7 на `LinkedList`, 8 на последовательности, 5 на `BitSequence`, 1 на `(min, max, avg)`.
+28 тестов: 7 на `DynamicArray`, 7 на `LinkedList`, 8 на последовательности, 5 на `BitSequence`, 1 на `(min, max, avg)`.
 
 ## Консольное меню
 
