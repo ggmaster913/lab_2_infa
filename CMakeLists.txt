@@ -20,11 +20,15 @@ FetchContent_MakeAvailable(googletest)
 # исполняемый файл для тестов
 add_executable(tests
     tests/Tests.cpp
+    src/Bit.cpp
+    src/BitSequence.cpp
 )
 target_link_libraries(tests gtest_main)
 
 # исполняемый файл для UI
 add_executable(ui
     ui/ConsoleUI.cpp
+    src/Bit.cpp
+    src/BitSequence.cpp
 )
 

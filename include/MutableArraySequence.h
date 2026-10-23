@@ -19,14 +19,25 @@ protected:
     }
 
 public:
-    using ArraySequence<T>::ArraySequence; //перетаскиваем конструкторы из ArraySequence только теперь для MutableArraySequence 
-    using Sequence<T>::operator[]; // иначе T& operator[] спрятал бы const версию из Sequence
+    // конструкторы не наследуются, поэтому передаём их в ArraySequence явно
+    MutableArraySequence() : ArraySequence<T>() {}
+    MutableArraySequence(const T* data, int count) : ArraySequence<T>(data, count) {}
+    MutableArraySequence(const DynamicArray<T>& array) : ArraySequence<T>(array) {}
+    MutableArraySequence(const LinkedList<T>& list) : ArraySequence<T>(list) {}
+
+    // const версию пишем явно, иначе из за T& operator[] не перенеслось из Sequence тк есть уже оператор 
+    const T& operator[](int index) const {
+        return this->Get(index);
+    }
 
     T& operator[](int index){
         return (*this->items)[index];
     }
+
+    
 };
 
+// map всегда собирает MutableArraySequence: какой тип у исходной, шаблонный метод не знает
 template<typename T>
 template<typename T2>
 Sequence<T2>* Sequence<T>::Map(T2 (*f)(const T&)) const {

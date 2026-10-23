@@ -2,7 +2,6 @@
 #define SEQUENCESTATS_H
 
 #include "Sequence.h"
-#include <stdexcept>
 
 template<typename T>
 struct MinMaxAvg {
@@ -16,34 +15,18 @@ struct MinMaxAvgAccumulator {
     T min;
     T max;
     T sum;
-    double count;
+    double count; // double для того чтобы деление получалось дробным
 };
 
 template<typename T>
-MinMaxAvgAccumulator<T> CombineMinMxAvg(const MinMaxAvgAccumulator<T>& acc, const T& item) {
-    if (acc.count == 0) return {item, item, item, 1}; // первый эл сразу и min и max
-
-    T newMin = (item < acc.min) ? item : acc.min;
-    T newMax = (item > acc.max) ? item : acc.max;
-    T newSum = acc.sum + item;
-
-    return {newMin, newMax, newSum, acc.count + 1};
-}
+MinMaxAvgAccumulator<T> CombineMinMaxAvg(const MinMaxAvgAccumulator<T>& acc, const T& item);
 
 template<typename T>
-MinMaxAvg<T> ComputerMinMaxAvg(const Sequence<T>* seq) {
-    if (seq -> GetLength() == 0) {
-        throw std::invalid_argument("нельзя посчитать min/max/avg для пустой последовательности");
-    }
-    MinMaxAvgAccumulator<T> initial = {T(), T(), T(), 0};
-    MinMaxAvgAccumulator<T> result = seq->Reduce(CombineMinMxAvg<T>, initial);
+MinMaxAvg<T> ComputeMinMaxAvg(const Sequence<T>* seq);
 
-    return {
-        result.min,
-        result.max,
-        static_cast<double>(result.sum/result.count) // count double, поэтому деление не целочисленное
-    };
+// тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp
+#ifndef SEQUENCESTATS_TPP // если открыт сам .tpp, он уже подключает этот .h, по кругу не надо
+#include "SequenceStats.tpp"
+#endif
 
-}
-
-#endif 
+#endif

@@ -16,7 +16,7 @@
 | `ArraySequence<T>` и `ListSequence<T>` | `include/ArraySequence.h`, `include/ListSequence.h` |
 | Изменяемые и неизменяемые варианты | `include/Mutable*Sequence.h`, `include/Immutable*Sequence.h` |
 | `Map`, `Where`, `Reduce` | `include/Sequence.h`, `include/ArraySequence.h`, `include/ListSequence.h`, `include/MutableArraySequence.h` |
-| `BitSequence` (интерфейс `Sequence<Bit>`) с AND, OR, XOR, NOT | `include/Bit.h`, `include/BitSequence.h` |
+| `BitSequence` (интерфейс `Sequence<Bit>`) с AND, OR, XOR, NOT | `include/Bit.h`, `include/BitSequence.h`, `src/Bit.cpp`, `src/BitSequence.cpp` |
 | Замер производительности `Append` на массиве и на списке | `ui/ConsoleUI.cpp` |
 
 Пункты варианта (таблица 2 методички, нужно не менее 9 баллов):
@@ -45,11 +45,21 @@ include/
   MutableListSequence.h, ImmutableListSequence.h
   Bit.h, BitSequence.h
   SequenceStats.h
+  DynamicArray.tpp, LinkedList.tpp, Sequence.tpp,
+  ArraySequence.tpp, ListSequence.tpp, SequenceStats.tpp
+src/
+  Bit.cpp, BitSequence.cpp
 tests/
   Tests.cpp
 ui/
   ConsoleUI.cpp
 ```
+
+В `.h` объявления, реализация вынесена. Классы-шаблоны нельзя скомпилировать
+отдельно в `.cpp`: компилятор достраивает шаблон под конкретный `T` там, где
+его используют, и в этот момент должен видеть тела методов. Поэтому тела
+шаблонов лежат в `.tpp`, который подключается в конце своего `.h`. `Bit` и
+`BitSequence` не шаблоны, их реализация в обычных `.cpp` в `src/`.
 
 ## Сборка
 

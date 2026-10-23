@@ -19,13 +19,13 @@ int ReadInt() {
             std::exit(0);
         }
         std::cin.clear(); // иначе cin так и останется в ошибке и дальше ничего не прочитает
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // выкидываем остаток строки с неправильным вводом
         std::cout << "Ошибка: нужно целое число. Повторите ввод: ";
     }
     return value;
 }
 
-// Функции для функциональных операций
+// передаются в Where, Map и Reduce
 bool PredicateEven(const int& x) { return x % 2 == 0; }
 int TransformSquare(const int& x) { return x * x; }
 int AccumulateSum(const int& acc, const int& x) { return acc + x; }
@@ -78,7 +78,7 @@ Sequence<int>* BuildSequenceInteractive(bool& isMutable) {
         count = ReadInt();
     }
 
-    DynamicArray<int> buffer(count > 0 ? count : 0);
+    DynamicArray<int> buffer(count > 0 ? count : 0); // сначала читаем в массив, для списка потом переливаем
     for (int i = 0; i < count; ++i) {
         std::cout << "Элемент " << i << ": ";
         int val = ReadInt();
@@ -120,24 +120,29 @@ void ExecuteSequenceMenu() {
                   << "Пункт > ";
 
         int option = ReadInt();
-        if (option == 0) break;
+        if (option == 0) break; // до switch, тк break в switch не выходит из while
 
         try {
-            if (option == 1) {
+            switch (option) {
+            case 1: {
                 std::cout << "Значение: ";
                 int v = ReadInt();
                 Sequence<int>* next = currentSeq->Append(v);
                 if (!isMutable) delete currentSeq; // иммутабл вернул новый объект, старый удаляем, иначе утечка
                 currentSeq = next;
                 OutputSequence(currentSeq);
-            } else if (option == 2) {
+                break;
+            }
+            case 2: {
                 std::cout << "Значение: ";
                 int v = ReadInt();
                 Sequence<int>* next = currentSeq->Prepend(v);
                 if (!isMutable) delete currentSeq;
                 currentSeq = next;
                 OutputSequence(currentSeq);
-            } else if (option == 3) {
+                break;
+            }
+            case 3: {
                 std::cout << "Значение: ";
                 int v = ReadInt();
                 std::cout << "Индекс: ";
@@ -146,14 +151,19 @@ void ExecuteSequenceMenu() {
                 if (!isMutable) delete currentSeq;
                 currentSeq = next;
                 OutputSequence(currentSeq);
-            } else if (option == 4) {
+                break;
+            }
+            case 4: {
                 std::cout << "Индекс: ";
                 int idx = ReadInt();
                 std::cout << "Элемент [" << idx << "] = " << currentSeq->Get(idx) << "\n";
-            } else if (option == 5) {
+                break;
+            }
+            case 5:
                 std::cout << "Первый: " << currentSeq->GetFirst() 
                           << ", Последний: " << currentSeq->GetLast() << "\n";
-            } else if (option == 6) {
+                break;
+            case 6: {
                 std::cout << "Индекс начала: ";
                 int s = ReadInt();
                 std::cout << "Индекс конца: ";
@@ -162,7 +172,9 @@ void ExecuteSequenceMenu() {
                 std::cout << "Срез: ";
                 OutputSequence(sub);
                 delete sub;
-            } else if (option == 7) {
+                break;
+            }
+            case 7: {
                 std::cout << "Сколько элементов во второй последовательности: ";
                 int k = ReadInt();
                 DynamicArray<int> tempArr(k);
@@ -171,32 +183,43 @@ void ExecuteSequenceMenu() {
                     int v = ReadInt();
                     tempArr.Set(i, v);
                 }
-                MutableArraySequence<int> second(tempArr);
+                MutableArraySequence<int> second(tempArr); // на стеке: Concat копирует эл, удалять не надо
                 Sequence<int>* joined = currentSeq->Concat(&second);
                 if (!isMutable) delete currentSeq;
                 currentSeq = joined;
                 OutputSequence(currentSeq);
-            } else if (option == 8) {
+                break;
+            }
+            case 8: {
                 Sequence<int>* filtered = currentSeq->Where(PredicateEven);
                 std::cout << "Четные числа: ";
                 OutputSequence(filtered);
                 delete filtered;
-            } else if (option == 9) {
+                break;
+            }
+            case 9: {
                 Sequence<int>* mapped = currentSeq->Map(TransformSquare);
                 std::cout << "Квадраты: ";
                 OutputSequence(mapped);
                 delete mapped;
-            } else if (option == 10) {
+                break;
+            }
+            case 10: {
                 int total = currentSeq->Reduce<int>(AccumulateSum, 0);
                 std::cout << "Сумма всех элементов: " << total << "\n";
-            } else if (option == 11) {
-                MinMaxAvg<int> stats = ComputerMinMaxAvg(currentSeq);
+                break;
+            }
+            case 11: {
+                MinMaxAvg<int> stats = ComputeMinMaxAvg(currentSeq);
                 std::cout << "Минимум:  " << stats.min << "\n"
                           << "Максимум: " << stats.max << "\n"
                           << "Среднее:  " << stats.avg << "\n";
-            } else if (option == 12) {
+                break;
+            }
+            case 12:
                 OutputSequence(currentSeq);
-            } else {
+                break;
+            default:
                 std::cout << "Неизвестный пункт.\n";
             }
         } catch (const std::exception& err) {
@@ -223,13 +246,12 @@ void ExecuteBitMenu() {
         BitSequence mask1(raw);
         OutputBitMask(&mask1);
 
-        // Инверсия
         BitSequence* inverted = mask1.Not();
         std::cout << "NOT (инверсия): ";
         OutputBitMask(inverted);
         delete inverted;
 
-        // Побитовое И с тестовой маской (чередование 1 и 0)
+        // вторая маска 1010..., чтоб было с чем делать AND
         DynamicArray<Bit> raw2(len);
         for (int i = 0; i < len; ++i) {
             raw2.Set(i, Bit(i % 2 == 0));
@@ -282,11 +304,14 @@ int main() {
 
         int mainChoice = ReadInt();
 
-        if (mainChoice == 0) break;
-        if (mainChoice == 1) ExecuteSequenceMenu();
-        else if (mainChoice == 2) ExecuteBitMenu();
-        else if (mainChoice == 3) ExecuteBenchmark();
-        else std::cout << "Некорректная команда.\n";
+        if (mainChoice == 0) break; // до switch, тк break в switch не выходит из while
+
+        switch (mainChoice) {
+        case 1: ExecuteSequenceMenu(); break;
+        case 2: ExecuteBitMenu(); break;
+        case 3: ExecuteBenchmark(); break;
+        default: std::cout << "Некорректная команда.\n";
+        }
     }
 
     std::cout << "Программа завершена.\n";

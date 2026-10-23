@@ -20,7 +20,15 @@ protected:
 
 public:
     // T& operator[] нет специально, чтоб нельзя было поменять эл
-    using ArraySequence<T>::ArraySequence; //перетаскиваем конструкторы из ArraySequence только теперь для IMmutableArraySequence 
+    // конструкторы не наследуются, поэтому передаём их в ArraySequence явно
+    ImmutableArraySequence() : ArraySequence<T>() {}
+    ImmutableArraySequence(const T* data, int count) : ArraySequence<T>(data, count) {}
+    ImmutableArraySequence(const DynamicArray<T>& array) : ArraySequence<T>(array) {}
+    ImmutableArraySequence(const LinkedList<T>& list) : ArraySequence<T>(list) {}
+    ImmutableArraySequence(const ImmutableArraySequence<T>& other) : ArraySequence<T>(other) {} // нужен для Clone()
+
+    // присваивание запрещено, иначе a = b перезаписало бы иммутабл объект
+    ImmutableArraySequence<T>& operator=(const ImmutableArraySequence<T>&) = delete;
 
 };
 

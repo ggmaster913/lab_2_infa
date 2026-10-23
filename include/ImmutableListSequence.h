@@ -19,7 +19,15 @@ protected:
     }
 
 public:
-    using ListSequence<T>::ListSequence; //перетаскиваем конструкторы из ArraySequence только теперь для IMmutableArraySequence 
+    // конструкторы не наследуются, поэтому передаём их в ListSequence явно
+    ImmutableListSequence() : ListSequence<T>() {}
+    ImmutableListSequence(const T* data, int count) : ListSequence<T>(data, count) {}
+    ImmutableListSequence(const LinkedList<T>& list) : ListSequence<T>(list) {}
+    ImmutableListSequence(const DynamicArray<T>& array) : ListSequence<T>(array) {}
+    ImmutableListSequence(const ImmutableListSequence<T>& other) : ListSequence<T>(other) {} // нужен для Clone()
+
+    // присваивание запрещено, иначе a = b перезаписало бы иммутабл объект
+    ImmutableListSequence<T>& operator=(const ImmutableListSequence<T>&) = delete;
 
 };
 

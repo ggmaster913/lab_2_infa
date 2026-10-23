@@ -110,6 +110,11 @@ TEST(DynamicArrayTest, IndexOperatorReadWrite) {
 
     EXPECT_THROW(arr[-1], std::out_of_range);
     EXPECT_THROW(arr[3], std::out_of_range);
+
+    // константный массив читается через [] (константная версия оператора)
+    const DynamicArray<int>& constArr = arr;
+    EXPECT_EQ(constArr[1], 10);
+    EXPECT_THROW(constArr[3], std::out_of_range);
 }
 
 // работа через интерфейс icollection
@@ -201,6 +206,11 @@ TEST(LinkedListTest, IndexOperatorReadWrite) {
 
     EXPECT_THROW(list[-1], std::out_of_range);
     EXPECT_THROW(list[2], std::out_of_range);
+
+    // константный список читается через [] (константная версия оператора)
+    const LinkedList<int>& constList = list;
+    EXPECT_EQ(constList[0], 99);
+    EXPECT_THROW(constList[2], std::out_of_range);
 }
 
 // копирование списка и независимость данных
@@ -439,18 +449,18 @@ TEST(BitSequenceTest, SetBitAndBounds) {
 TEST(SequenceStatsTest, ComputeMinMaxAvgCalculations) {
     int raw1[] = {-10, -5, -20};
     MutableArraySequence<int> seq1(raw1, 3);
-    MinMaxAvg<int> stats1 = ComputerMinMaxAvg(&seq1);
+    MinMaxAvg<int> stats1 = ComputeMinMaxAvg(&seq1);
     EXPECT_EQ(stats1.min, -20);
     EXPECT_EQ(stats1.max, -5);
     EXPECT_DOUBLE_EQ(stats1.avg, -35.0 / 3.0);
 
     int raw2[] = {42};
     MutableArraySequence<int> seq2(raw2, 1);
-    MinMaxAvg<int> stats2 = ComputerMinMaxAvg(&seq2);
+    MinMaxAvg<int> stats2 = ComputeMinMaxAvg(&seq2);
     EXPECT_EQ(stats2.min, 42);
     EXPECT_EQ(stats2.max, 42);
     EXPECT_DOUBLE_EQ(stats2.avg, 42.0);
 
     MutableArraySequence<int> emptySeq;
-    EXPECT_THROW(ComputerMinMaxAvg(&emptySeq), std::invalid_argument);
+    EXPECT_THROW(ComputeMinMaxAvg(&emptySeq), std::invalid_argument);
 }
