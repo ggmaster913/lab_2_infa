@@ -15,8 +15,8 @@
 | Последовательность `Sequence<T>` (абстрактный класс) | `include/Sequence.h` |
 | `ArraySequence<T>` и `ListSequence<T>` | `include/ArraySequence.h`, `include/ListSequence.h` |
 | Изменяемые и неизменяемые варианты | `include/Mutable*Sequence.h`, `include/Immutable*Sequence.h` |
-| `Map`, `Where`, `Reduce` | `include/Sequence.h`, `include/ArraySequence.h`, `include/ListSequence.h`, `include/MutableArraySequence.h` |
-| `BitSequence` (интерфейс `Sequence<Bit>`) с AND, OR, XOR, NOT | `include/Bit.h`, `include/BitSequence.h`, `src/Bit.cpp`, `src/BitSequence.cpp` |
+| `Map`, `Where`, `Reduce` | `include/Sequence.tpp`, `include/ArraySequence.tpp`, `include/ListSequence.tpp`, `include/MutableArraySequence.tpp` |
+| `BitSequence` (интерфейс `Sequence<Bit>`): все обычные операции последовательности по наследству от `MutableArraySequence<Bit>`, плюс AND, OR, XOR, NOT; подпоследовательность и `Where` тоже `BitSequence` | `include/Bit.h`, `include/BitSequence.h`, `src/Bit.cpp`, `src/BitSequence.cpp` |
 | Замер производительности `Append` на массиве и на списке | `ui/ConsoleUI.cpp` |
 
 Пункты варианта (таблица 2 методички, нужно не менее 9 баллов):
@@ -46,7 +46,8 @@ include/
   Bit.h, BitSequence.h
   SequenceStats.h
   DynamicArray.tpp, LinkedList.tpp, Sequence.tpp,
-  ArraySequence.tpp, ListSequence.tpp, SequenceStats.tpp
+  ArraySequence.tpp, ListSequence.tpp, SequenceStats.tpp,
+  MutableArraySequence.tpp (только тело Map из Sequence)
 src/
   Bit.cpp, BitSequence.cpp
 tests/
@@ -77,7 +78,7 @@ cmake --build build
 ./build/tests
 ```
 
-28 тестов: 7 на `DynamicArray`, 7 на `LinkedList`, 8 на последовательности, 5 на `BitSequence`, 1 на `(min, max, avg)`.
+30 тестов: 7 на `DynamicArray`, 7 на `LinkedList`, 8 на последовательности, 7 на `BitSequence` (побитовые и обычные операции), 1 на `(min, max, avg)`.
 
 ## Консольное меню
 

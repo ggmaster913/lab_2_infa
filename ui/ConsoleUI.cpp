@@ -13,13 +13,13 @@
 // читает целое число, при ошибке просит ввести снова
 int ReadInt() {
     int value;
-    while (!(std::cin >> value)) {
-        if (std::cin.eof()) {
+    while (!(std::cin >> value)) { // >> берёт цифры подряд, пока идут: 12abc вернёт 12, а abc останется в буфере на следующий раз
+        if (std::cin.eof()) { // ввод закончился совсем (Ctrl+D), читать больше нечего
             std::cout << "\nКонец ввода. Завершение работы.\n";
-            std::exit(0);
+            std::exit(0); // сразу завершает программу, деструкторы локальных объектов не вызываются, память освободит ОС
         }
-        std::cin.clear(); // иначе cin так и останется в ошибке и дальше ничего не прочитает
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // выкидываем остаток строки с неправильным вводом
+        std::cin.clear(); // снимает с cin состояние ошибки, иначе он так и останется в ошибке и дальше ничего не прочитает
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // выкидываем остаток строки с неправильным вводом, иначе >> снова споткнётся о него
         std::cout << "Ошибка: нужно целое число. Повторите ввод: ";
     }
     return value;
@@ -123,7 +123,7 @@ void ExecuteSequenceMenu() {
         if (option == 0) break; // до switch, тк break в switch не выходит из while
 
         try {
-            switch (option) {
+            switch (option) { // у каждого case свои {}: иначе прыжок на следующий case обходил бы инициализацию переменных и не компилировалось
             case 1: {
                 std::cout << "Значение: ";
                 int v = ReadInt();
@@ -159,10 +159,11 @@ void ExecuteSequenceMenu() {
                 std::cout << "Элемент [" << idx << "] = " << currentSeq->Get(idx) << "\n";
                 break;
             }
-            case 5:
+            case 5: {
                 std::cout << "Первый: " << currentSeq->GetFirst() 
                           << ", Последний: " << currentSeq->GetLast() << "\n";
                 break;
+            }
             case 6: {
                 std::cout << "Индекс начала: ";
                 int s = ReadInt();
@@ -216,11 +217,13 @@ void ExecuteSequenceMenu() {
                           << "Среднее:  " << stats.avg << "\n";
                 break;
             }
-            case 12:
+            case 12: {
                 OutputSequence(currentSeq);
                 break;
-            default:
+            }
+            default: {
                 std::cout << "Неизвестный пункт.\n";
+            }
             }
         } catch (const std::exception& err) {
             std::cout << "Исключение: " << err.what() << "\n";

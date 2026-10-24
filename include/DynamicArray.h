@@ -1,5 +1,4 @@
-#ifndef DYNAMICARRAY_H
-#define DYNAMICARRAY_H
+#pragma once
 
 #include "ICollection.h"
 
@@ -32,9 +31,4 @@ public:
     int GetCount() const override;
 };
 
-// тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp
-#ifndef DYNAMICARRAY_TPP // если открыт сам .tpp, он уже подключает этот .h, по кругу не надо
-#include "DynamicArray.tpp"
-#endif
-
-#endif
+#include "DynamicArray.tpp" // тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp

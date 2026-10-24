@@ -1,5 +1,4 @@
-#ifndef DYNAMICARRAY_TPP
-#define DYNAMICARRAY_TPP
+#pragma once
 
 #include "DynamicArray.h" // для редактора: он открывает .tpp отдельно и без этого не знает класс
 #include <stdexcept>
@@ -118,5 +117,3 @@ template <typename T>
 int DynamicArray<T>::GetCount() const {
     return GetSize();
 }
-
-#endif

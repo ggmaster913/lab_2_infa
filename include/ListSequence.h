@@ -1,5 +1,4 @@
-#ifndef LISTSEQUENCE_H
-#define LISTSEQUENCE_H
+#pragma once
 
 #include "Sequence.h"
 #include "LinkedList.h"
@@ -44,9 +43,4 @@ public:
     Sequence<T>* Where(bool (*predicate)(const T&)) const override;
 };
 
-// тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp
-#ifndef LISTSEQUENCE_TPP // если открыт сам .tpp, он уже подключает этот .h, по кругу не надо
-#include "ListSequence.tpp"
-#endif
-
-#endif
+#include "ListSequence.tpp" // тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp

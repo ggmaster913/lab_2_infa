@@ -1,5 +1,4 @@
-#ifndef LINKEDLIST_H
-#define LINKEDLIST_H
+#pragma once
 
 template <typename T>
 class LinkedList{
@@ -35,9 +34,4 @@ public:
     LinkedList<T>* Concat(LinkedList<T>* list) const;
 };
 
-// тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp
-#ifndef LINKEDLIST_TPP // если открыт сам .tpp, он уже подключает этот .h, по кругу не надо
-#include "LinkedList.tpp"
-#endif
-
-#endif
+#include "LinkedList.tpp" // тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp

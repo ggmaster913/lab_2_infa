@@ -1,5 +1,4 @@
-#ifndef SEQUENCESTATS_TPP
-#define SEQUENCESTATS_TPP
+#pragma once
 
 #include "SequenceStats.h" // для редактора: он открывает .tpp отдельно и без этого не знает класс
 #include <stdexcept>
@@ -29,5 +28,3 @@ MinMaxAvg<T> ComputeMinMaxAvg(const Sequence<T>* seq) {
         result.sum/result.count
     };
 }
-
-#endif

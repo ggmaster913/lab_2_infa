@@ -1,5 +1,4 @@
-#ifndef SEQUENCE_TPP
-#define SEQUENCE_TPP
+#pragma once
 
 #include "Sequence.h" // для редактора: он открывает .tpp отдельно и без этого не знает класс
 
@@ -19,5 +18,3 @@ template<typename T>
 const T& Sequence<T>::operator[](int index) const {
     return this->Get(index);
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef SEQUENCESTATS_H
-#define SEQUENCESTATS_H
+#pragma once
 
 #include "Sequence.h"
 
@@ -24,9 +23,4 @@ MinMaxAvgAccumulator<T> CombineMinMaxAvg(const MinMaxAvgAccumulator<T>& acc, con
 template<typename T>
 MinMaxAvg<T> ComputeMinMaxAvg(const Sequence<T>* seq);
 
-// тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp
-#ifndef SEQUENCESTATS_TPP // если открыт сам .tpp, он уже подключает этот .h, по кругу не надо
-#include "SequenceStats.tpp"
-#endif
-
-#endif
+#include "SequenceStats.tpp" // тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp

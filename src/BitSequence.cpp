@@ -1,6 +1,10 @@
 #include "BitSequence.h"
 #include <stdexcept>
 
+ArraySequence<Bit>* BitSequence::CreateInstance(const DynamicArray<Bit>& subArray) const {
+    return new BitSequence(subArray);
+}
+
 BitSequence::BitSequence() : MutableArraySequence<Bit>() {} // указываем какой конструктор базы использовать
 
 BitSequence::BitSequence(const Bit* data, int count) : MutableArraySequence<Bit>(data, count) {}

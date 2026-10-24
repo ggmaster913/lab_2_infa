@@ -1,11 +1,14 @@
-#ifndef BITSEQUENCE_H
-#define BITSEQUENCE_H
+#pragma once
 
 #include "MutableArraySequence.h"
 #include "Bit.h"
 
 // BitSequence не шаблон, поэтому реализация в src/BitSequence.cpp
 class BitSequence : public MutableArraySequence<Bit> {
+protected:
+    // иначе GetSubSequence и Where вернули бы MutableArraySequence<Bit>, а не BitSequence
+    ArraySequence<Bit>* CreateInstance(const DynamicArray<Bit>& subArray) const override;
+
 public:
 
     BitSequence();
@@ -29,5 +32,3 @@ public:
     // индекс проверит Set
     void SetBit(int index, bool value);
 };
-
-#endif

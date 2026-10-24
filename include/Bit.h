@@ -1,5 +1,4 @@
-#ifndef BIT_H
-#define BIT_H
+#pragma once
 
 // Bit не шаблон, поэтому реализация в src/Bit.cpp
 class Bit {
@@ -28,5 +27,3 @@ public:
     // равны ли  два бита
     bool operator==(const Bit& other) const;
 };
-
-#endif

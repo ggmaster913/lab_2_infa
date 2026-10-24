@@ -1,5 +1,4 @@
-#ifndef LISTSEQUENCE_TPP
-#define LISTSEQUENCE_TPP
+#pragma once
 
 #include "ListSequence.h" // для редактора: он открывает .tpp отдельно и без этого не знает класс
 #include <stdexcept>
@@ -139,5 +138,3 @@ Sequence<T>* ListSequence<T>::Where(bool (*predicate)(const T&)) const {
     }
     return this->CreateInstance(temp);
 }
-
-#endif

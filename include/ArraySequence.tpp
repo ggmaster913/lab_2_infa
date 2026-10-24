@@ -1,5 +1,4 @@
-#ifndef ARRAYSEQUENCE_TPP
-#define ARRAYSEQUENCE_TPP
+#pragma once
 
 #include "ArraySequence.h" // для редактора: он открывает .tpp отдельно и без этого не знает класс
 #include <stdexcept>
@@ -161,5 +160,3 @@ Sequence<T>* ArraySequence<T>::Where(bool (*predicate)(const T&)) const {
     }
     return this->CreateInstance(temp);
 }
-
-#endif

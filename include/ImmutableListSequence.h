@@ -1,5 +1,4 @@
-#ifndef IMMUTABLELISTSEQUENCE_H
-#define IMMUTABLELISTSEQUENCE_H
+#pragma once
 
 #include "ListSequence.h"
 
@@ -30,5 +29,3 @@ public:
     ImmutableListSequence<T>& operator=(const ImmutableListSequence<T>&) = delete;
 
 };
-
-#endif

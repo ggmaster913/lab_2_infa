@@ -1,5 +1,4 @@
-#ifndef IMMUTABLEARRAYSEQUENCE_H
-#define IMMUTABLEARRAYSEQUENCE_H
+#pragma once
 
 #include "ArraySequence.h"
 
@@ -31,5 +30,3 @@ public:
     ImmutableArraySequence<T>& operator=(const ImmutableArraySequence<T>&) = delete;
 
 };
-
-#endif

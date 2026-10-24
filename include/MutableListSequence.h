@@ -1,5 +1,4 @@
-#ifndef MUTABLELISTSEQUENCE_H
-#define MUTABLELISTSEQUENCE_H
+#pragma once
 
 #include "ListSequence.h"
 
@@ -34,5 +33,3 @@ public:
         return (*this->items)[index];
     }
 };
-
-#endif

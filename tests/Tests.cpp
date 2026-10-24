@@ -443,6 +443,61 @@ TEST(BitSequenceTest, SetBitAndBounds) {
     EXPECT_THROW(bits.SetBit(2, true), std::out_of_range);
 }
 
+bool IsOneBit(const Bit& b) { return b.GetValue(); }
+int CountOnes(const int& acc, const Bit& b) { return acc + b.GetValue(); }
+
+// обычные операции последовательности, которые BitSequence получает по наследству
+TEST(BitSequenceTest, OrdinarySequenceOperations) {
+    bool raw[] = {true, false, true};
+    BitSequence bits(raw, 3);
+
+    bits.Append(Bit(false));
+    bits.Prepend(Bit(true));
+    bits.InsertAt(Bit(false), 1); // 1 0 1 0 1 0
+    EXPECT_EQ(bits.GetLength(), 6);
+    EXPECT_TRUE(bits.GetFirst().GetValue());
+    EXPECT_FALSE(bits.GetLast().GetValue());
+    EXPECT_FALSE(bits.Get(1).GetValue());
+
+    bits[1] = Bit(true); // 1 1 1 0 1 0
+    EXPECT_TRUE(bits.GetBit(1));
+
+    bool rawTail[] = {true, true};
+    BitSequence tail(rawTail, 2);
+    bits.Concat(&tail); // 1 1 1 0 1 0 1 1
+    EXPECT_EQ(bits.GetLength(), 8);
+    EXPECT_TRUE(bits.GetBit(7));
+
+    EXPECT_EQ(bits.Reduce(CountOnes, 0), 6);
+    EXPECT_THROW(bits.Get(8), std::out_of_range);
+}
+
+// GetSubSequence и Where возвращают BitSequence, с результатом работают побитовые операции
+TEST(BitSequenceTest, SubSequenceAndWhereReturnBitSequence) {
+    bool raw[] = {true, false, true, true};
+    BitSequence bits(raw, 4);
+
+    Sequence<Bit>* sub = bits.GetSubSequence(1, 2); // 0 1
+    BitSequence* subBits = dynamic_cast<BitSequence*>(sub);
+    ASSERT_NE(subBits, nullptr);
+    EXPECT_FALSE(subBits->GetBit(0));
+    EXPECT_TRUE(subBits->GetBit(1));
+
+    bool rawMask[] = {true, true};
+    BitSequence mask(rawMask, 2);
+    BitSequence* andRes = subBits->And(mask);
+    EXPECT_FALSE(andRes->GetBit(0));
+    EXPECT_TRUE(andRes->GetBit(1));
+
+    Sequence<Bit>* ones = bits.Where(IsOneBit);
+    EXPECT_NE(dynamic_cast<BitSequence*>(ones), nullptr);
+    EXPECT_EQ(ones->GetLength(), 3);
+
+    delete andRes;
+    delete sub;
+    delete ones;
+}
+
 // --- sequence stats ---
 
 // подсчет min, max, avg и обработка пустой последовательности

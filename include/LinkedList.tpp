@@ -1,5 +1,4 @@
-#ifndef LINKEDLIST_TPP
-#define LINKEDLIST_TPP
+#pragma once
 
 #include "LinkedList.h" // для редактора: он открывает .tpp отдельно и без этого не знает класс
 #include <stdexcept>
@@ -196,5 +195,3 @@ LinkedList<T>* LinkedList<T>::Concat(LinkedList<T>* list) const{
 
     return result;
 }
-
-#endif

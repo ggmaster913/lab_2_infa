@@ -1,5 +1,4 @@
-#ifndef SEQUENCE_H
-#define SEQUENCE_H
+#pragma once
 
 template<typename T>
 class Sequence{
@@ -25,14 +24,9 @@ public:
 
     const T& operator[](int index) const;
 
-    // тело в MutableArraySequence.h, тк тут MutableArraySequence ещё не известен
+    // тело в MutableArraySequence.tpp, тк тут MutableArraySequence ещё не известен
     template<typename T2>
     Sequence<T2>* Map(T2 (*f)(const T&)) const;
 };
 
-// тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp
-#ifndef SEQUENCE_TPP // если открыт сам .tpp, он уже подключает этот .h, по кругу не надо
-#include "Sequence.tpp"
-#endif
-
-#endif
+#include "Sequence.tpp" // тела шаблона должны быть видны там, где подставляется T, поэтому не .cpp
